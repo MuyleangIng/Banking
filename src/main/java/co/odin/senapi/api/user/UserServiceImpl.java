@@ -2,6 +2,8 @@ package co.odin.senapi.api.user;
 
 import co.odin.senapi.api.user.web.CreateUserDto;
 import co.odin.senapi.api.user.web.UserDto;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public PageInfo<UserDto> findAllUsers(int page, int limit) {
+        //Call Repo
+        PageInfo<User> userPageInfo = PageHelper.startPage(page,limit).doSelectPageInfo(userMapper::select);
+        return userMapStruct.userPageInfoToUserDtoPageInfo(userPageInfo);
+    }
+
+    @Override
     public UserDto findUserById(Integer id) {
         User user = userMapper.selectById(id).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -38,6 +47,17 @@ public class UserServiceImpl implements UserService{
         if (isFound){
             //DELETE
             userMapper.deleteById(id);
+            return id;
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                String.format("User with %d is not found",id));
+    }
+
+    @Override
+    public Integer updateDeletedStatus(boolean status,Integer id) {
+        boolean isExisted = userMapper.existsById(id);
+        if (isExisted){
+            userMapper.updateIsDeletedById(id,status);
             return id;
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,

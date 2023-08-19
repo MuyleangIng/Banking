@@ -22,6 +22,10 @@ repositories {
 }
 
 dependencies {
+	// https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter
+	implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.4.7'
+
+
 	// Config mapstruct with lombok
 	implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'

@@ -2,6 +2,7 @@ package co.odin.senapi.api.user.web;
 
 import co.odin.senapi.api.user.UserService;
 import co.odin.senapi.base.BaseRest;
+import com.github.pagehelper.PageInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,31 @@ public class UserRestController {
 
     private final UserService userService;
 
+    @GetMapping
+    public BaseRest<?> findAllUsers(@RequestParam(name = "page",required = false,defaultValue = "1") int page,
+                                    @RequestParam(name = "limit",required = false,defaultValue = "20") int limit){
+        PageInfo<UserDto> userDtoPageInfo = userService.findAllUsers(page, limit);
+        return BaseRest.builder()
+                .status(true)
+                .code(HttpStatus.OK.value())
+                .message("get all users")
+                .timestamp(LocalDateTime.now())
+                .data(userDtoPageInfo)
+                .build();
+    }
+
+    @PutMapping("/{id}")
+    public BaseRest<?> updateIsDeletedStatusById(@PathVariable Integer id, @RequestBody IsDeletedDto dto){
+        Integer deletedId = userService.updateDeletedStatus(dto.status(),id);
+        return BaseRest.builder()
+                .status(true)
+                .code(HttpStatus.OK.value())
+                .message("User has been updated your status successfully")
+                .timestamp(LocalDateTime.now())
+                .data(deletedId)
+                .build();
+
+    }
     @DeleteMapping("/{id}")
     public BaseRest<?> deleteUserById(@PathVariable Integer id){
         Integer deletedId = userService.deleteUserById(id);
