@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/v1/account-types")
+@RequestMapping("/api/v1/account-types1")
 @RequiredArgsConstructor
 public class AccountTypeRestController {
 
